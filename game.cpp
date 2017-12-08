@@ -31,10 +31,9 @@ const int snake[constants::MAX_SNAKE][2] =
  {87, 24}, {93, 73},
  {95, 75}, {98, 79}};
 
-int roll_the_dice ()
+int roll_the_dice (double fraction)
 {
-	srand(time(NULL));
-	int random = rand()%6+1;
+	int random =1+ static_cast<int>(6*(rand()*fraction));
 	//std::cout<<random<<std::endl;
 	return random;
 }
@@ -195,23 +194,25 @@ int main()
 	int step_count=0, position[2]={1, 1};
 	cv::namedWindow("SnakeAndLadders", CV_WINDOW_NORMAL);
 	imshow("SnakeAndLadders", game);
+	srand(time(NULL));
+	const double fraction = 1.0 / (static_cast<double>(RAND_MAX) + 1.0);
 	
 	show_game(get_x_coordinate(1), get_y_coordinate(1), get_x_coordinate(1), get_y_coordinate(1));
 	
 	
 	while(not_finished)
 	{
-		step_count = roll_the_dice();
+		step_count = roll_the_dice(fraction);
 		if(step_count==6)
 		{
 			std::cout<<((player_index)?"CPU got ":"Yay! You got ")<<"6. "<<((player_index)?"CPU get ":"You get ")<<"another chance"<<std::endl;
 			cv::waitKey(0);
-			step_count += roll_the_dice();
+			step_count += roll_the_dice(fraction);
 			if(step_count==12)
 			{
 				std::cout<<((player_index)?"CPU got ":"Yay! You got ")<<"6 again. "<<((player_index)?"CPU get ":"You get ")<<"another chance" << std::endl;
 				cv::waitKey(0);
-				step_count +=roll_the_dice();
+				step_count +=roll_the_dice(fraction);
 				if(step_count==18)
 				{
 					std::cout<<"Alas! Triple 6s"<<std::endl;
